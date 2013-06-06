@@ -13,7 +13,7 @@ class TcpServer
   : public QTcpServer
 {
 public:
-  TcpServer(unsigned int numThreads);
+  TcpServer(unsigned int numThreads, unsigned int numObjectsPerThread);
   ~TcpServer();
 
 protected:

@@ -6,7 +6,7 @@ int main(int argc, char **args)
 {
   QCoreApplication qapp(argc, args);
 
-  TcpServer server(1);//QThread::idealThreadCount());
+  TcpServer server(QThread::idealThreadCount(), 50);
   server.listen(QHostAddress::Any, 1337);
 
   return qapp.exec();

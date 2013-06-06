@@ -11,9 +11,9 @@
 // TcpServer
 ///////////////////////////////////////////////////////////////////////////////
 
-TcpServer::TcpServer(unsigned int numThreads)
+TcpServer::TcpServer(unsigned int numThreads, unsigned int numObjectsPerThread)
   : QTcpServer(),
-    _eventLoopPool(numThreads, 1)
+    _eventLoopPool(numThreads, numObjectsPerThread)
 {
   // Create test files.
   QString file_512bytes_path = QDir::tempPath() + "/512B.bin";
@@ -43,6 +43,7 @@ void TcpServer::incomingConnection(int socketDescriptor)
   if (!_eventLoopPool.poolObject(req)) {
     // No free worker thread available.
     // PersistentEchoRequestHandler stays in Main-Thread.
+    connect(req, SIGNAL(done()), req, SLOT(deleteLater()));
   }
   QMetaObject::invokeMethod(req, "handleRequest", Qt::QueuedConnection);
 }

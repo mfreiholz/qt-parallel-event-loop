@@ -30,7 +30,7 @@ class PersistentConnectionBenchmark
 {
   Q_OBJECT
 public:
-  PersistentConnectionBenchmark(int num, QObject *parent);
+  PersistentConnectionBenchmark(int numConnections, int numPacketsPerConnection, QObject *parent);
   ~PersistentConnectionBenchmark();
   void run();
 
@@ -39,6 +39,7 @@ private slots:
 
 private:
   int _num_connections;
+  int _num_packets_per_connection;
   QList<class ConnectionHandler*> _handlers;
 
   Stats _stats;
@@ -52,7 +53,7 @@ class ConnectionHandler
   Q_OBJECT
   friend class PersistentConnectionBenchmark;
 public:
-  ConnectionHandler(const QString &address, quint16 port, QObject *parent);
+  ConnectionHandler(const QString &address, quint16 port, int numPackets, QObject *parent);
   ~ConnectionHandler();
 
 public slots:

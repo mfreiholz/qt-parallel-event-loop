@@ -8,9 +8,10 @@
 // PersistentConnectionBenchmark
 ///////////////////////////////////////////////////////////////////////////////
 
-PersistentConnectionBenchmark::PersistentConnectionBenchmark(int num, QObject *parent)
+PersistentConnectionBenchmark::PersistentConnectionBenchmark(int numConnections, int numPacketsPerConnection, QObject *parent)
   : QObject(parent),
-    _num_connections(num),
+    _num_connections(numConnections),
+    _num_packets_per_connection(numPacketsPerConnection),
     _handlers()
 {
 }
@@ -24,12 +25,13 @@ void PersistentConnectionBenchmark::run()
   _run_timer.start();
   for (int i = 0; i < _num_connections; ++i) {
     // Single threaded.
-    //ConnectionHandler *h = new ConnectionHandler("127.0.0.1", 1337, 0);
-    //connect(h, SIGNAL(finished()), SLOT(onConnectionFinished()));
-    //h->handle();
+//    ConnectionHandler *h = new ConnectionHandler("127.0.0.1", 1337, _num_packets_per_connection, 0);
+//    _handlers.append(h);
+//    connect(h, SIGNAL(finished()), SLOT(onConnectionFinished()));
+//    h->handle();
 
-    // Multi threaded.
-    ConnectionHandler *h = new ConnectionHandler("127.0.0.1", 1337, 0);
+    // Multi threaded (Think about a PEL here!)
+    ConnectionHandler *h = new ConnectionHandler("127.0.0.1", 1337, _num_packets_per_connection, 0);
     _handlers.append(h);
 
     QThread *t = new QThread(this);
@@ -85,13 +87,13 @@ void PersistentConnectionBenchmark::onConnectionFinished()
 // ConnectionHandler
 ///////////////////////////////////////////////////////////////////////////////
 
-ConnectionHandler::ConnectionHandler(const QString &address, quint16 port, QObject *parent)
+ConnectionHandler::ConnectionHandler(const QString &address, quint16 port, int numPackets, QObject *parent)
   : QObject(parent),
     _socket(0),
     _address(address),
     _port(port),
     _interval_ms(50),
-    _repeat_count(10),
+    _repeat_count(numPackets),
     _packet_size(512),
     _inbuffer()
 {

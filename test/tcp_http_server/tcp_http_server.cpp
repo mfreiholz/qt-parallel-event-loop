@@ -5,6 +5,7 @@
 #include "QtCore/QByteArray"
 #include "QtCore/QString"
 #include "QtCore/QEventLoop"
+#include "QtCore/QTime"
 #include "QtNetwork/QTcpSocket"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,6 +75,13 @@ void PersistentEchoRequestHandler::handleRequest()
 void PersistentEchoRequestHandler::onSocketReadyRead()
 {
   QByteArray data = _socket->readAll();
+
+  QTime t; t.start();
+  while (true) {
+    if (t.elapsed() >= 250)
+      break;
+  }
+
   _socket->write(data);
 }
 

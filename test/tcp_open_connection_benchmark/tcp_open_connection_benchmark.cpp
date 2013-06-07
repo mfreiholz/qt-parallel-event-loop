@@ -92,7 +92,7 @@ ConnectionHandler::ConnectionHandler(const QString &address, quint16 port, int n
     _socket(0),
     _address(address),
     _port(port),
-    _interval_ms(50),
+    _interval_ms(0),
     _repeat_count(numPackets),
     _packet_size(512),
     _inbuffer()
@@ -134,11 +134,6 @@ void ConnectionHandler::writeTestData()
   } else {
     ++_stats.stat_packet_write_success_count;
   }
-
-  if ((_stats.stat_packet_write_success_count + _stats.stat_packet_write_failed_count) < _repeat_count)
-    QTimer::singleShot(_interval_ms, this, SLOT(writeTestData()));
-  else
-    QTimer::singleShot(_interval_ms, this, SLOT(stop()));
 }
 
 void ConnectionHandler::stop()
@@ -176,4 +171,9 @@ void ConnectionHandler::onReadyRead()
     _stats.highest_response_time = _stats.latest_response_time;
 
   _inbuffer.clear();
+
+  if ((_stats.stat_packet_write_success_count + _stats.stat_packet_write_failed_count) < _repeat_count)
+    QTimer::singleShot(_interval_ms, this, SLOT(writeTestData()));
+  else
+    QTimer::singleShot(_interval_ms, this, SLOT(stop()));
 }

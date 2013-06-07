@@ -1,4 +1,7 @@
 #include "paralleleventloop.h"
+
+#include <cstdio>
+
 #include "QtCore/QTimerEvent"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,8 +54,8 @@ bool ParallelEventLoopPool::poolObject(QObject *obj)
   }
   _lock.unlock();
 
-//  if (!moved)
-//    fprintf(stdout, "No slot left in worker threads. Keep it in main event loop.\n");
+  if (!moved)
+    fprintf(stdout, "No slot left in worker threads. Keep it in main event loop.\n");
   return moved;
 }
 
